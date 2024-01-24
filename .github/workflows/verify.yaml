@@ -1,0 +1,27 @@
+name: Verify Dockerfile
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Build image
+        run: |
+          docker build -t academy-mqtt \
+            .
+
+      - name: Run image
+        run: docker run -p 1883:1883 -d academy-mqtt
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npx tsx --test test.ts
