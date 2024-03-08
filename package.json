@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "test": "npx tsx --test ip.spec.ts"
+  },
   "dependencies": {
     "@nordicsemiconductor/random-words": "^8.0.0",
     "mqtt": "5.3.5"

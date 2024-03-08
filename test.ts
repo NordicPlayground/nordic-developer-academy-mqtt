@@ -2,10 +2,16 @@ import mqtt from "mqtt";
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomWords } from "@nordicsemiconductor/random-words";
+import { ipv4, ipv6 } from "./ip";
+
+const hostname = process.env.HOSTNAME ?? "localhost";
+const ipv = process.env.IPV ?? "4";
+
+const addr = ipv === "6" ? `[${await ipv6(hostname)}]` : await ipv4(hostname);
 
 describe("MQTT server", async () => {
   await Promise.all(
-    ["mqtt://localhost:1883", "mqtts://localhost:8883"].map((endpoint) =>
+    [`mqtt://${addr}:1883`, `mqtts://${addr}:8883`].map((endpoint) =>
       describe(endpoint, async () => {
         test("the MQTT server should allow to publish and subscribe", async () => {
           const msg = `Hello World (${Date.now()})!`;
@@ -47,7 +53,7 @@ describe("MQTT server", async () => {
 
           assert.equal(received, msg);
         });
-      }),
-    ),
+      })
+    )
   );
 });
