@@ -5,9 +5,10 @@ import { randomWords } from "@nordicsemiconductor/random-words";
 import { ipv4, ipv6 } from "./ip";
 
 const hostname = process.env.HOSTNAME ?? "localhost";
-const ipv = process.env.IPV ?? "4";
+const ipv = process.env.IPV ?? "ipv4";
 
-const addr = ipv === "6" ? `[${await ipv6(hostname)}]` : await ipv4(hostname);
+const addr =
+  ipv === "ipv6" ? `[${await ipv6(hostname)}]` : await ipv4(hostname);
 
 describe("MQTT server", async () => {
   await Promise.all(

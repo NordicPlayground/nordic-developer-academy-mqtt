@@ -32,7 +32,7 @@ jobs:
 
     strategy:
       matrix:
-        ipv: [4, 6]
+        ipv: [ipv4, ipv6]
 
     steps:
       - uses: actions/checkout@v4
@@ -51,10 +51,10 @@ jobs:
         run: npm ci --no-audit
 
       - name: Set up WARP
-        if: matrix.ipv == 6
+        if: matrix.ipv == 'ipv6'
         uses: fscarmen/warp-on-actions@v1.0
 
-      - name: Run tests (IPv4)
+      - name: Run tests
         env:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
