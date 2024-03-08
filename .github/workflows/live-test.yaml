@@ -8,40 +8,31 @@ on:
     paths:
       - ".github/workflows/live-test.yaml"
 
+env:
+  HOSTNAME: mqtt.nordicsemi.academy
+
 jobs:
-  test-ipv4:
+  # Ensures that the TLS certificate can be fetched
+  fetch-cert:
     runs-on: ubuntu-latest
 
-    env:
-      HOSTNAME: mqtt.nordicsemi.academy
+    strategy:
+      matrix:
+        protocol: [http, https]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: fetch TLS certificate
+        run: http -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.crt
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
-
-      - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: build-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install dependencies
-        run: npm ci --no-audit
-
-      - name: Run tests (IPv4)
-        env:
-          IPV: 4
-          HOSTNAME: ${{ env.HOSTNAME }}
-        run: npx tsx --test test.ts
-
-  test-ipv6:
+  test-mqtt:
     runs-on: ubuntu-latest
 
-    env:
-      HOSTNAME: udp-echo.nordicsemi.academy
+    # needs:
+    #   - fetch-cert
+
+    strategy:
+      matrix:
+        ipv: [4, 6]
 
     steps:
       - uses: actions/checkout@v4
@@ -60,10 +51,11 @@ jobs:
         run: npm ci --no-audit
 
       - name: Set up WARP
+        if: matrix.ipv == 6
         uses: fscarmen/warp-on-actions@v1.0
 
-      - name: Run tests (IPv6)
+      - name: Run tests (IPv4)
         env:
-          IPV: 6
+          IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
         run: npx tsx --test test.ts
