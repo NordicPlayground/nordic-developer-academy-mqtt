@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: fetch TLS certificate
-        run: http -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.crt
+        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.crt
 
   test-mqtt:
     runs-on: ubuntu-latest
