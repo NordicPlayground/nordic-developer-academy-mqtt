@@ -14,8 +14,4 @@ COPY ./mosquitto.conf /mosquitto.conf
 
 VOLUME [ "/etc/cert" ]
 
-#COPY --chown=mosquitto:mosquitto ./CA.crt /CA.crt
-#COPY --chown=mosquitto:mosquitto ./server.crt /server.crt
-#COPY --chown=mosquitto:mosquitto ./server.key /server.key
-
 CMD [ "mosquitto", "-c", "/mosquitto.conf"]
