@@ -12,6 +12,8 @@ jobs:
         with:
           node-version: "20.x"
 
+      - run: mkdir certs
+
       - name: Prepare self-signed cert
         working-directory: certs
         run: |
