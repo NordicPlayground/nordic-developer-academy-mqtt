@@ -26,7 +26,7 @@ jobs:
           openssl req -out server.csr -key privkey.pem -new -subj '/CN=mqtt.academy.nordicsemi.com'
           # Sign CSR
           openssl x509 -req -in server.csr -CA chain.pem -CAkey CA.key -CAcreateserial -out cert.pem -days 365
-          sudo chown 105:106 certs/*
+          sudo chown 105:106 ./*
 
       - name: Build image
         run: docker build -t academy-mqtt .
