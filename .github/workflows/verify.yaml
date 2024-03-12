@@ -36,4 +36,6 @@ jobs:
         run: npm ci
 
       - name: Run tests
+        env:
+          VALIDATE_TLS_CERT: 0
         run: npx tsx --test test.ts

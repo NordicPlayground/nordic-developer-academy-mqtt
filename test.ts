@@ -6,6 +6,7 @@ import { ipv4, ipv6 } from "./ip";
 
 const hostname = process.env.HOSTNAME ?? "localhost";
 const ipv = process.env.IPV ?? "ipv4";
+const rejectUnauthorized = process.env.VALIDATE_TLS_CERT !== "0";
 
 const addr =
   ipv === "ipv6" ? `[${await ipv6(hostname)}]` : await ipv4(hostname);
@@ -19,7 +20,8 @@ describe("MQTT server", async () => {
           const topic = randomWords().join("-");
 
           const client = mqtt.connect(endpoint, {
-            rejectUnauthorized: false,
+            rejectUnauthorized,
+            servername: hostname,
           });
 
           const received = await new Promise<string>((resolve, reject) => {
