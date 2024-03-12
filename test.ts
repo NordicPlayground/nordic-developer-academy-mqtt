@@ -8,6 +8,10 @@ const hostname = process.env.HOSTNAME ?? "localhost";
 const ipv = process.env.IPV ?? "ipv4";
 const rejectUnauthorized = process.env.VALIDATE_TLS_CERT !== "0";
 
+console.log(`hostname:`, JSON.stringify(hostname));
+console.log(`ipv:`, JSON.stringify(ipv));
+console.log(`rejectUnauthorized:`, JSON.stringify(rejectUnauthorized));
+
 const addr =
   ipv === "ipv6" ? `[${await ipv6(hostname)}]` : await ipv4(hostname);
 
