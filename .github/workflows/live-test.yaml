@@ -59,3 +59,17 @@ jobs:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
         run: npx tsx --test test.ts
+
+  website:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: HTTP
+        run: |
+          curl --fail-with-body -v http://mqtt.nordicsemi.academy/ > http.html
+          diff http.html docs/index.html
+
+      - name: HTTPs
+        run: |
+          curl --fail-with-body -v https://mqtt.nordicsemi.academy/ > https.html
+          diff https.html docs/index.html
