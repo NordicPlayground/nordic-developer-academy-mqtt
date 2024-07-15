@@ -1,8 +1,16 @@
 name: Verify Dockerfile
 
-on: 
+on:
   push:
+    branches:
+      - saga
+  pull_request:
   workflow_dispatch:
+
+env:
+  IMAGE_TAGGED: mqtt:${{ github.sha }}
+  REPO_IMAGE_TAGGED: ${{ vars.REGISTRY_LOGIN_SERVER }}/mqtt:${{ github.sha }}
+  REPO_IMAGE_LATEST: ${{ vars.REGISTRY_LOGIN_SERVER }}/mqtt:latest
 
 jobs:
   test:
@@ -31,10 +39,17 @@ jobs:
           sudo chown 105:106 ./*
 
       - name: Build image
-        run: docker build -t academy-mqtt .
+        run: docker build -t ${{ env.IMAGE_TAGGED }} .
 
       - name: Run image
-        run: docker run -p 1883:1883 -p 8883:8883 -v ./certs:/etc/cert/live/mqtt.nordicsemi.academy/ -d academy-mqtt
+        run: docker run -p 1883:1883 -p 8883:8883 -v ./certs:/etc/cert/live/mqtt.nordicsemi.academy/ -d ${{ env.IMAGE_TAGGED }}
+
+      - name: Get container ID
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter "ancestor=${{ env.IMAGE_TAGGED }}")
+          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+
+      - run: docker container logs ${{ env.CONTAINER_ID }}
 
       - name: Install dependencies
         run: npm ci
@@ -43,3 +58,45 @@ jobs:
         env:
           VALIDATE_TLS_CERT: 0
         run: npx tsx --test test.ts
+
+      - name: Wait for metrics collection
+        # Runs every minute
+        run: sleep 15
+
+      - name: Get metrics process logs
+        run: docker exec ${{ env.CONTAINER_ID  }} bash -c 'cat /var/log/metrics.log'
+
+      - name: Get log file
+        run: |
+          LOG_FILES=`docker exec ${{ env.CONTAINER_ID  }} bash -c 'ls /var/log/academy/'`
+          echo $LOG_FILES
+          echo $LOG_FILES | tr ' ' '\n' | while read file ; do
+            echo $file
+            docker cp ${{ env.CONTAINER_ID  }}:/var/log/academy/$file ./
+          done
+
+      - name: Test log files
+        run: |
+          cat mqtt-*.log > all-mqtt.log
+          cat all-mqtt.log
+          grep -E "^20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}+,mqtt,connect$" all-mqtt.log
+          grep -E "^20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}+,mqtt,publish$" all-mqtt.log
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: metric-logs-${{ github.sha }}
+          path: |
+            mqtt-*.log
+
+      - name: Docker logs
+        if: always()
+        run: docker container logs ${{ env.CONTAINER_ID }}
+
+      - name: Push image to the infrastructure container registry as latest
+        if: github.ref == 'refs/heads/saga'
+        run: |
+          docker login -u ${{ vars.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ vars.REGISTRY_LOGIN_SERVER }}
+          docker tag ${{ env.IMAGE_TAGGED }} ${{ env.REPO_IMAGE_TAGGED }} 
+          docker push ${{ env.REPO_IMAGE_TAGGED }}
+          docker tag ${{ env.IMAGE_TAGGED }} ${{ env.REPO_IMAGE_LATEST }}
+          docker push ${{ env.REPO_IMAGE_LATEST }}
