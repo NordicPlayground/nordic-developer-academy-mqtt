@@ -59,9 +59,9 @@ jobs:
           VALIDATE_TLS_CERT: 0
         run: npx tsx --test test.ts
 
-      # - name: Wait for metrics collection
-      #   # Runs every minute
-      #   run: sleep 120
+      - name: Wait for metrics collection
+        # Runs every minute
+        run: sleep 15
 
       - name: Get metrics process logs
         run: docker exec ${{ env.CONTAINER_ID  }} bash -c 'cat /var/log/metrics.log'
