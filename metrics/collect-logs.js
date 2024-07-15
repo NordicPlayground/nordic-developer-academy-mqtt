@@ -35,7 +35,7 @@ const collectMetrics = () => {
   fs.writeFileSync(
     lastLogFile,
     logEntries[logEntries.length - 1]?.[0] ?? nowString,
-    "utf-8"
+    "utf-8",
   );
 
   const metrics = [];

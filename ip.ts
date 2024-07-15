@@ -14,7 +14,7 @@ const resolveHostname =
           } catch {
             return null;
           }
-        })
+        }),
       )
     )
       .flat()

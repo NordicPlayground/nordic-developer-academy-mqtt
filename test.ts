@@ -60,7 +60,7 @@ describe("MQTT server", async () => {
 
           assert.equal(received, msg);
         });
-      })
-    )
+      }),
+    ),
   );
 });
