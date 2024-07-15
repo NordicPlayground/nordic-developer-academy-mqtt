@@ -51,6 +51,4 @@ const collectMetrics = () => {
     fs.writeFileSync(metricsLogFile, metrics.join("\n") + "\n", "utf-8");
 };
 
-setInterval(collectMetrics, 60 * 1000);
-// Wait 10 seconds before starting the first collection
-setTimeout(collectMetrics, 10 * 1000);
+setInterval(collectMetrics, 5 * 1000);

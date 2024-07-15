@@ -59,12 +59,17 @@ jobs:
           VALIDATE_TLS_CERT: 0
         run: npx tsx --test test.ts
 
-      - name: Wait for log collection
-        run: sleep 120
+      # - name: Wait for metrics collection
+      #   # Runs every minute
+      #   run: sleep 120
+
+      - name: Get metrics process logs
+        run: docker exec ${{ env.CONTAINER_ID  }} bash -c 'cat /var/log/metrics.log'
 
       - name: Get log file
         run: |
           LOG_FILES=`docker exec ${{ env.CONTAINER_ID  }} bash -c 'ls /var/log/academy/'`
+          echo $LOG_FILES
           echo $LOG_FILES | tr ' ' '\n' | while read file ; do
             echo $file
             docker cp ${{ env.CONTAINER_ID  }}:/var/log/academy/$file ./
