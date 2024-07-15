@@ -77,7 +77,7 @@ jobs:
 
       - name: Test log files
         run: |
-          cat *-mqtt-*.log > all-mqtt.log
+          cat mqtt-*.log > all-mqtt.log
           cat all-mqtt.log
           grep -E "^20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}+[^,]+,mqtt,connect$" all-mqtt.log
           grep -E "^20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}+[^,]+,mqtt,publish$" all-mqtt.log
@@ -86,7 +86,7 @@ jobs:
         with:
           name: metric-logs-${{ github.sha }}
           path: |
-            *-mqtt-*.log
+            mqtt-*.log
 
       - name: Docker logs
         if: always()
