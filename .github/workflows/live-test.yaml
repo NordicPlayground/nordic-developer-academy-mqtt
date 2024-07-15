@@ -24,11 +24,19 @@ jobs:
       - name: fetch TLS certificate
         run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.crt
 
-  live-test:
+  fetch-cert-chain:
     runs-on: ubuntu-latest
 
-    # needs:
-    #   - fetch-cert
+    strategy:
+      matrix:
+        protocol: [http, https]
+
+    steps:
+      - name: fetch TLS certificate chain
+        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.chain.pem
+
+  live-test:
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -63,13 +71,12 @@ jobs:
   website:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: HTTP
-        run: |
-          curl --fail-with-body -v http://mqtt.nordicsemi.academy/ > http.html
-          diff http.html docs/index.html
+    strategy:
+      matrix:
+        protocol: [http, https]
 
-      - name: HTTPs
+    steps:
+      - name: ${{ matrix.protocol }}
         run: |
-          curl --fail-with-body -v https://mqtt.nordicsemi.academy/ > https.html
-          diff https.html docs/index.html
+          curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/ > ${{ matrix.protocol }}.html
+          diff ${{ matrix.protocol }}.html docs/index.html
