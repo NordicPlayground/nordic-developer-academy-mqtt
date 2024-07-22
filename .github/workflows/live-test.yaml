@@ -76,6 +76,8 @@ jobs:
         protocol: [http, https]
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: ${{ matrix.protocol }}
         run: |
           curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/ > ${{ matrix.protocol }}.html
