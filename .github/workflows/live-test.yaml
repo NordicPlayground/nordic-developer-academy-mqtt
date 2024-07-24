@@ -82,3 +82,11 @@ jobs:
         run: |
           curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/ > ${{ matrix.protocol }}.html
           diff ${{ matrix.protocol }}.html docs/index.html
+
+  certificate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: npx tsx check-certificate-expiry.ts
