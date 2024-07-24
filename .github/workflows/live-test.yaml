@@ -89,4 +89,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - run: npm ci
+
       - run: npx tsx check-certificate-expiry.ts
