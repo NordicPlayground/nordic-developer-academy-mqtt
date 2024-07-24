@@ -37,9 +37,9 @@ const expiryInDays = (expiryDate.getTime() - Date.now()) / 1000 / 60 / 60 / 24;
 
 if (expiryInDays < 1)
   throw new Error(
-    `The certificate for ${hostname} expires in less than 24 hours!`
+    `The certificate for ${hostname} expires in less than 24 hours!`,
   );
 
 console.log(
-  `The certificate for ${hostname} expires in ${Math.floor(expiryInDays)} days.`
+  `The certificate for ${hostname} expires in ${Math.floor(expiryInDays)} days.`,
 );
