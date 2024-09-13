@@ -66,6 +66,8 @@ jobs:
         env:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
+          MQTTS_PORT: 456
+          CA_PATH: ${{ github.workspace }}/${{ env.HOSTNAME }}.cert.pem
         run: npx tsx --test test.ts
 
   website:
