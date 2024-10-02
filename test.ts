@@ -10,7 +10,7 @@ const ipv = process.env.IPV ?? "ipv4";
 const rejectUnauthorized = process.env.VALIDATE_TLS_CERT !== "0";
 const mqttPort = process.env.MQTT_PORT ?? "1883";
 const mqttsPort = process.env.MQTTS_PORT ?? "8883";
-const caPath = process.env.CA_PATH;
+const certPath = process.env.CERT_PATH;
 
 console.log(`hostname:`, JSON.stringify(hostname));
 console.log(`ipv:`, JSON.stringify(ipv));
@@ -31,10 +31,10 @@ describe("MQTT server", async () => {
             const client = mqtt.connect(endpoint, {
               rejectUnauthorized,
               servername: hostname,
-              ca:
-                caPath === undefined
+              cert:
+                certPath === undefined
                   ? undefined
-                  : await fs.readFile(caPath, "utf-8"),
+                  : await fs.readFile(certPath, "utf-8"),
             });
 
             const received = await new Promise<string>((resolve, reject) => {
