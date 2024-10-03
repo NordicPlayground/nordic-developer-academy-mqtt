@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: fetch TLS certificate
-        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
+        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
 
   live-test:
     runs-on: ubuntu-latest
@@ -50,6 +50,9 @@ jobs:
       - name: Set up WARP (for IPv6)
         if: matrix.ipv == 'ipv6'
         uses: fscarmen/warp-on-actions@v1.0
+
+      - name: fetch TLS certificate
+        run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
 
       - name: Run tests
         env:
