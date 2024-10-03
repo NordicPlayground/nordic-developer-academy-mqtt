@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: fetch TLS certificate
-        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
+        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
 
   live-test:
     runs-on: ubuntu-latest

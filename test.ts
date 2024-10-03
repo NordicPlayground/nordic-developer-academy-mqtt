@@ -31,7 +31,8 @@ describe("MQTT server", async () => {
             const client = mqtt.connect(endpoint, {
               rejectUnauthorized,
               servername: hostname,
-              cert:
+              // Use the server certificate as the CA so the client can validate the server
+              ca:
                 certPath === undefined
                   ? undefined
                   : await fs.readFile(certPath, "utf-8"),
