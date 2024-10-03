@@ -22,18 +22,7 @@ jobs:
 
     steps:
       - name: fetch TLS certificate
-        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.crt
-
-  fetch-cert-chain:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        protocol: [http, https]
-
-    steps:
-      - name: fetch TLS certificate chain
-        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.chain.pem
+        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
 
   live-test:
     runs-on: ubuntu-latest
@@ -62,10 +51,14 @@ jobs:
         if: matrix.ipv == 'ipv6'
         uses: fscarmen/warp-on-actions@v1.0
 
+      - name: fetch TLS certificate
+        run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
+
       - name: Run tests
         env:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
+          CERT_PATH: ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
         run: npx tsx --test test.ts
 
   website:

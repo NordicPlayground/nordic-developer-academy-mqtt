@@ -29,13 +29,13 @@ jobs:
         run: |
           # CA key and certificate
           openssl genrsa -out CA.key 2048
-          openssl req -new -x509 -nodes -key CA.key -sha256 -days 365 -extensions v3_ca -out chain.pem -subj '/OU=Nordic Developer Academy'
+          openssl req -new -x509 -nodes -key CA.key -sha256 -days 365 -extensions v3_ca -out ca.pem -subj '/OU=Nordic Developer Academy'
           # Server key
           openssl genrsa -out privkey.pem 2048
           # CSR
           openssl req -out server.csr -key privkey.pem -new -subj '/CN=mqtt.academy.nordicsemi.com'
           # Sign CSR
-          openssl x509 -req -in server.csr -CA chain.pem -CAkey CA.key -CAcreateserial -out cert.pem -days 365
+          openssl x509 -req -in server.csr -CA ca.pem -CAkey CA.key -CAcreateserial -out cert.pem -days 365
           sudo chown 105:106 ./*
 
       - name: Build image
