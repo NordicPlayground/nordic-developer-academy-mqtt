@@ -49,7 +49,7 @@ jobs:
 
       - name: Set up WARP (for IPv6)
         if: matrix.ipv == 'ipv6'
-        uses: fscarmen/warp-on-actions@v1.0
+        uses: fscarmen/warp-on-actions@v1.1
 
       - name: fetch TLS certificate
         run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
