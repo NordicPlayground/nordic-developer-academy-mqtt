@@ -25,7 +25,8 @@ jobs:
         run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
 
   live-test:
-    runs-on: ubuntu-latest
+    # openresolv is not available on ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
