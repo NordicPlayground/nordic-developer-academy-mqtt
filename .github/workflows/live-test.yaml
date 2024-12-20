@@ -74,7 +74,7 @@ jobs:
           CONFIG+="Endpoint = 162.159.193.10:2408"
           echo "$CONFIG" | sed "s/^[ ]\+//g" | sudo tee /etc/wireguard/warp.conf
           sudo wg-quick up warp
-          sleep 1
+          sleep 5
 
       - name: fetch TLS certificate
         run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
