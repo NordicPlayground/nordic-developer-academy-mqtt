@@ -76,6 +76,8 @@ jobs:
           sudo wg-quick up warp
           sleep 5
 
+      - run: curl ifconfig.me
+
       - name: fetch TLS certificate
         run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
 
