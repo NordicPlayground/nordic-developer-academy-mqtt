@@ -50,35 +50,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit
 
-      - name: Set up WARP (for IPv6)
-        if: matrix.ipv == 'ipv6'
-        run: |
-          echo "WARP mode: wireguard."
-          sudo apt-get -y update
-          sudo apt-get -y install --no-install-recommends net-tools iproute2 openresolv dnsutils iptables wireguard-tools
-          LAN=$(ip route get 192.168.193.10 | grep -oP 'src \K\S+')
-          CONFIG="
-          [Interface]
-          PrivateKey = cKE7LmCF61IhqqABGhvJ44jWXp8fKymcMAEVAzbDF2k=
-          Address = 172.16.0.2/32
-          Address = fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128
-          PostUp = ip -4 rule add from $LAN lookup main
-          PostDown = ip -4 rule delete from $LAN lookup main
-          DNS = 8.8.8.8,8.8.4.4
-          MTU = 1280
-
-          [Peer]
-          PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=
-          AllowedIPs = 0.0.0.0/0
-          AllowedIPs = ::/0
-          Endpoint = 162.159.193.10:2408
-          "
-          echo "$CONFIG" | sed "s/^[ ]\+//g" | sudo tee /etc/wireguard/warp.conf
-          sudo cat /etc/wireguard/warp.conf
-          sudo wg-quick up warp
-          sleep 5
-
-      - run: curl ifconfig.me
+      - name: Set up WARP
+        uses: fscarmen/warp-on-actions@v1.3
 
       - name: fetch TLS certificate
         run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
