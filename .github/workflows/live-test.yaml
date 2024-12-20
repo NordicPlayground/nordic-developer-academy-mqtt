@@ -74,7 +74,7 @@ jobs:
           Endpoint = 162.159.193.10:2408
           "
           echo "$CONFIG" | sed "s/^[ ]\+//g" | sudo tee /etc/wireguard/warp.conf
-          cat /etc/wireguard/warp.conf
+          sudo cat /etc/wireguard/warp.conf
           sudo wg-quick up warp
           sleep 5
 
