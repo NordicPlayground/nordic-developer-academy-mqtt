@@ -74,7 +74,7 @@ jobs:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
           CERT_PATH: ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
-        run: node --experimental-transform-types --test test.ts
+        run: npm test
 
   website:
     runs-on: ubuntu-latest

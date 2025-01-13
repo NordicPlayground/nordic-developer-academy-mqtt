@@ -57,7 +57,7 @@ jobs:
       - name: Run tests
         env:
           VALIDATE_TLS_CERT: 0
-        run: node --experimental-transform-types --test test.ts
+        run: npm test
 
       - name: Wait for metrics collection
         # Runs every minute

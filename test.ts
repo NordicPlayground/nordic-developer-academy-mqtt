@@ -2,7 +2,7 @@ import mqtt from "mqtt";
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomWords } from "@nordicsemiconductor/random-words";
-import { ipv4, ipv6 } from "./ip";
+import { ipv4, ipv6 } from "./ip.ts";
 import fs from "node:fs/promises";
 
 const hostname = process.env.HOSTNAME ?? "localhost";
@@ -70,7 +70,7 @@ describe("MQTT server", async () => {
 
             assert.equal(received, msg);
           });
-        }),
-    ),
+        })
+    )
   );
 });
