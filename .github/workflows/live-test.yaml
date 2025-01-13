@@ -85,7 +85,7 @@ jobs:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
           CERT_PATH: ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
-        run: npm test
+        run: npm run test:e2e
 
   website:
     runs-on: ubuntu-latest

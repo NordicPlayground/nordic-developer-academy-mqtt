@@ -1,10 +1,11 @@
 {
   "type": "module",
   "scripts": {
-    "test": "node --experimental-transform-types --test ip.spec.ts"
+    "test": "node --experimental-transform-types --test ip.spec.ts",
+    "test:e2e": "node --experimental-transform-types --test test.ts"
   },
   "dependencies": {
-    "@nordicsemiconductor/random-words": "^8.0.1",
+    "@nordicsemiconductor/random-words": "8.0.1",
     "mqtt": "5.10.3"
   },
   "engines": {

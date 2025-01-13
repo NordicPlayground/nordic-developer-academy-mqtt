@@ -58,7 +58,7 @@ jobs:
       - name: Run tests
         env:
           VALIDATE_TLS_CERT: 0
-        run: npm test
+        run: npm test:e2e
 
       - name: Wait for metrics collection
         # Runs every minute
