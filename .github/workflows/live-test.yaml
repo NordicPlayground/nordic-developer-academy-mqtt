@@ -66,7 +66,7 @@ jobs:
       - name: Check if WARP is working
         if: matrix.ipv == 'ipv6'
         run: |
-          curl -v -6 -s https://www.cloudflare.com/cdn-cgi/trace/ -o response.txt
+          curl -v -s https://www.cloudflare.com/cdn-cgi/trace/ -o response.txt
           cat response.txt
           if cat response.txt | grep -q "warp=on"; then
             echo "WARP is enabled"
