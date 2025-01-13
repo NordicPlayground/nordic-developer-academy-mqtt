@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: "22.x"
 
       - run: mkdir certs
 
@@ -57,7 +57,7 @@ jobs:
       - name: Run tests
         env:
           VALIDATE_TLS_CERT: 0
-        run: npx tsx --test test.ts
+        run: node --experimental-transform-types --test test.ts
 
       - name: Wait for metrics collection
         # Runs every minute

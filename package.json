@@ -1,13 +1,13 @@
 {
   "type": "module",
   "scripts": {
-    "test": "npx tsx --test ip.spec.ts"
+    "test": "node --experimental-transform-types --test ip.spec.ts"
   },
   "dependencies": {
-    "@nordicsemiconductor/random-words": "^8.0.0",
-    "mqtt": "5.3.5"
+    "@nordicsemiconductor/random-words": "^8.0.1",
+    "mqtt": "5.10.3"
   },
-  "devDependencies": {
-    "tsx": "4.7.0"
+  "engines": {
+    "node": ">=22.7.0"
   }
 }

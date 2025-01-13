@@ -42,7 +42,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: "22.x"
 
       - name: Keep npm cache around to speed up installs
         uses: actions/cache@v4
@@ -64,7 +64,7 @@ jobs:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
           CERT_PATH: ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
-        run: npx tsx --test test.ts
+        run: node --experimental-transform-types --test test.ts
 
   website:
     runs-on: ubuntu-latest
@@ -87,6 +87,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
       - run: npm ci
 
-      - run: npx tsx check-certificate-expiry.ts
+      - run: node --experimental-transform-types check-certificate-expiry.ts
