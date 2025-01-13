@@ -1,0 +1,24 @@
+name: Warp installation test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/warp-test.yaml"
+
+jobs:
+  install-warp:
+    # openresolv is not available on ubuntu-24.04
+    runs-on: ubuntu-22.04
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Set up WARP
+        run: sudo apt install cloudflare-warp
+
+      - run: warp-cli registration new
+
+      - run: warp-cli connect
+
+      - run: curl https://www.cloudflare.com/cdn-cgi/trace/
