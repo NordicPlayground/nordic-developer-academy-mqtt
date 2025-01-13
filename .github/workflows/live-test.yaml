@@ -12,21 +12,8 @@ env:
   HOSTNAME: mqtt.nordicsemi.academy
 
 jobs:
-  # Ensures that the TLS certificate can be fetched
-  fetch-cert:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        protocol: [http, https]
-
-    steps:
-      - name: fetch TLS certificate
-        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
-
   live-test:
-    # openresolv is not available on ubuntu-24.04
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     timeout-minutes: 10
 
@@ -54,10 +41,33 @@ jobs:
         run: npm ci --no-audit
 
       - name: Set up WARP
-        uses: fscarmen/warp-on-actions@v1.3
+        if: matrix.ipv == 'ipv6'
+        run: |
+          sudo apt-get -y update
+          curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+          sudo apt-get update
+          sudo apt-get install -y cloudflare-warp
+          sudo warp-cli --accept-tos registration new
+          sudo warp-cli --accept-tos connect
+          sudo warp-cli --accept-tos mode warp
+          response=$(curl -s https://www.cloudflare.com/cdn-cgi/trace/)
+          echo "$response"
+          if echo "$response" | grep -q "warp=on"; then
+            echo "WARP is enabled"
+          else
+            echo "WARP is not enabled"
+            exit 1
+          fi
+          echo "IPv6: $(sudo curl -s6m8 --retry 3 -A Mozilla https://api.ip.sb/geoip)"
 
-      - name: fetch TLS certificate
-        run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
+      - name: fetch TLS certificate (IPv4)
+        if: matrix.ipv == 'ipv4'
+        run: curl -4 --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
+
+      - name: fetch TLS certificate (IPv6)
+        if: matrix.ipv == 'ipv6'
+        run: curl -6 --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
 
       - name: Run tests
         env:
