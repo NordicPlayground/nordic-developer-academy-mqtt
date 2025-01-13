@@ -11,6 +11,7 @@ env:
   IMAGE_TAGGED: mqtt:${{ github.sha }}
   REPO_IMAGE_TAGGED: ${{ vars.REGISTRY_LOGIN_SERVER }}/mqtt:${{ github.sha }}
   REPO_IMAGE_LATEST: ${{ vars.REGISTRY_LOGIN_SERVER }}/mqtt:latest
+  NODE_NO_WARNINGS: 1
 
 jobs:
   test:

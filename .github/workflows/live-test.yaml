@@ -10,6 +10,7 @@ on:
 
 env:
   HOSTNAME: mqtt.nordicsemi.academy
+  NODE_NO_WARNINGS: 1
 
 jobs:
   live-test:
