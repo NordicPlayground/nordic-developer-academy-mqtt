@@ -63,11 +63,11 @@ jobs:
 
       - name: fetch TLS certificate (IPv4)
         if: matrix.ipv == 'ipv4'
-        run: curl -4 --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
+        run: curl -4 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
 
       - name: fetch TLS certificate (IPv6)
         if: matrix.ipv == 'ipv6'
-        run: curl -6 --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
+        run: curl -6 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
 
       - name: Run tests
         env:
@@ -79,17 +79,13 @@ jobs:
   website:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        protocol: [http, https]
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: ${{ matrix.protocol }}
+      - name: https
         run: |
-          curl -L --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/ > ${{ matrix.protocol }}.html
-          diff ${{ matrix.protocol }}.html docs/index.html
+          curl -L --fail-with-body -v https://${{ env.HOSTNAME }}/ > https.html
+          diff https.html docs/index.html
 
   certificate:
     runs-on: ubuntu-latest
