@@ -13,6 +13,10 @@ env:
   REPO_IMAGE_LATEST: ${{ vars.REGISTRY_LOGIN_SERVER }}/mqtt:latest
   NODE_NO_WARNINGS: 1
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
       - name: Run tests
         env:
           VALIDATE_TLS_CERT: 0
-        run: npm test:e2e
+        run: npm run test:e2e
 
       - name: Wait for metrics collection
         # Runs every minute

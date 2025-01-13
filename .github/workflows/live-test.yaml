@@ -12,6 +12,10 @@ env:
   HOSTNAME: mqtt.nordicsemi.academy
   NODE_NO_WARNINGS: 1
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   live-test:
     runs-on: ubuntu-latest
