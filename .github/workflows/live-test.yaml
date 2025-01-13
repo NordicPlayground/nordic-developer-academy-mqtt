@@ -74,11 +74,11 @@ jobs:
 
       - name: fetch TLS certificate (IPv4)
         if: matrix.ipv == 'ipv4'
-        run: curl -4 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
+        run: curl -4 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
 
       - name: fetch TLS certificate (IPv6)
         if: matrix.ipv == 'ipv6'
-        run: curl -6 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
+        run: curl -6 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
 
       - name: Run tests
         env:
