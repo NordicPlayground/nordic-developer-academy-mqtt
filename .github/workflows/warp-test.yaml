@@ -37,3 +37,7 @@ jobs:
             echo "WARP is not enabled"
             exit 1
           fi
+
+      - run: echo "IPv4: $(sudo curl -s4m8 --retry 3 -A Mozilla https://api.ip.sb/geoip)"
+
+      - run: echo "IPv6: $(sudo curl -s6m8 --retry 3 -A Mozilla https://api.ip.sb/geoip)"
