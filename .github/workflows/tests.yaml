@@ -34,4 +34,4 @@ jobs:
         run: npm ci --no-audit
 
       - name: Run tests
-        run: npm run test:e2e
+        run: npm run test
