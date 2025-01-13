@@ -26,7 +26,8 @@ jobs:
       matrix:
         ipv:
           - ipv4
-          - ipv6
+          # IPv6 is not working anymore with fscarmen/warp-on-actions
+          # - ipv6
       max-parallel: 1
 
     steps:
@@ -45,39 +46,11 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit
 
-      - name: Install WARP client
+      - name: Set up WARP
         if: matrix.ipv == 'ipv6'
-        run: |
-          sudo apt-get -y update
-          curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
-          sudo apt-get update
-          sudo apt-get install -y cloudflare-warp
-
-      - run: sudo warp-cli --accept-tos registration new
-        if: matrix.ipv == 'ipv6'
-
-      - run: sudo warp-cli --accept-tos connect
-        if: matrix.ipv == 'ipv6'
-
-      - run: sudo warp-cli --accept-tos mode warp
-        if: matrix.ipv == 'ipv6'
-
-      - run: sudo warp-cli --accept-tos debug network
-        if: matrix.ipv == 'ipv6'
-
-      - name: Check if WARP is working
-        if: matrix.ipv == 'ipv6'
-        run: |
-          curl -v -s https://www.cloudflare.com/cdn-cgi/trace/ -o response.txt
-          cat response.txt
-          if cat response.txt | grep -q "warp=on"; then
-            echo "WARP is enabled"
-          else
-            echo "WARP is not enabled"
-            exit 1
-          fi
-          echo "IPv6: $(sudo curl -s6m8 --retry 3 -A Mozilla https://api.ip.sb/geoip)"
+        uses: fscarmen/warp-on-actions@v1.3
+        with:
+          stack: ipv6
 
       - name: fetch TLS certificate (IPv4)
         if: matrix.ipv == 'ipv4'
