@@ -32,7 +32,10 @@ jobs:
 
     strategy:
       matrix:
-        ipv: [ipv4, ipv6]
+        ipv:
+          - ipv4
+          - ipv6
+      max-parallel: 1
 
     steps:
       - uses: actions/checkout@v4
