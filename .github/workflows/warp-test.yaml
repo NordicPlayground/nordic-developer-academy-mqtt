@@ -26,4 +26,14 @@ jobs:
 
       - run: sudo warp-cli --accept-tos connect
 
-      - run: curl https://www.cloudflare.com/cdn-cgi/trace/
+      - run: sudo warp-cli --accept-tos mode warp
+
+      - run: |
+          response=$(curl -s https://www.cloudflare.com/cdn-cgi/trace/)
+          echo "$response"
+          if echo "$response" | grep -q "warp=on"; then
+            echo "WARP is enabled"
+          else
+            echo "WARP is not enabled"
+            exit 1
+          fi
