@@ -1,10 +1,17 @@
 name: Unit tests
 
+env:
+  NODE_NO_WARNINGS: 1
+
 on:
   push:
     branches:
       - saga
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   unit-tests:
@@ -27,4 +34,4 @@ jobs:
         run: npm ci --no-audit
 
       - name: Run tests
-        run: npm test
+        run: npm run test

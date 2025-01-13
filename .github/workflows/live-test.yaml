@@ -10,23 +10,15 @@ on:
 
 env:
   HOSTNAME: mqtt.nordicsemi.academy
+  NODE_NO_WARNINGS: 1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  # Ensures that the TLS certificate can be fetched
-  fetch-cert:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        protocol: [http, https]
-
-    steps:
-      - name: fetch TLS certificate
-        run: curl --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem
-
   live-test:
-    # openresolv is not available on ubuntu-24.04
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     timeout-minutes: 10
 
@@ -34,7 +26,8 @@ jobs:
       matrix:
         ipv:
           - ipv4
-          - ipv6
+          # IPv6 is not working anymore with fscarmen/warp-on-actions
+          # - ipv6
       max-parallel: 1
 
     steps:
@@ -54,32 +47,36 @@ jobs:
         run: npm ci --no-audit
 
       - name: Set up WARP
+        if: matrix.ipv == 'ipv6'
         uses: fscarmen/warp-on-actions@v1.3
+        with:
+          stack: ipv6
 
-      - name: fetch TLS certificate
-        run: curl --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
+      - name: fetch TLS certificate (IPv4)
+        if: matrix.ipv == 'ipv4'
+        run: curl -4 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
+
+      - name: fetch TLS certificate (IPv6)
+        if: matrix.ipv == 'ipv6'
+        run: curl -6 --fail-with-body -v https://${{ env.HOSTNAME }}/${{ env.HOSTNAME }}.pem > ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
 
       - name: Run tests
         env:
           IPV: ${{ matrix.ipv }}
           HOSTNAME: ${{ env.HOSTNAME }}
           CERT_PATH: ${{ github.workspace }}/${{ env.HOSTNAME }}.pem
-        run: node --experimental-transform-types --test test.ts
+        run: npm run test:e2e
 
   website:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        protocol: [http, https]
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: ${{ matrix.protocol }}
+      - name: https
         run: |
-          curl -L --fail-with-body -v ${{ matrix.protocol }}://${{ env.HOSTNAME }}/ > ${{ matrix.protocol }}.html
-          diff ${{ matrix.protocol }}.html docs/index.html
+          curl -L --fail-with-body -v https://${{ env.HOSTNAME }}/ > https.html
+          diff https.html docs/index.html
 
   certificate:
     runs-on: ubuntu-latest
