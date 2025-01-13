@@ -60,7 +60,10 @@ jobs:
       - run: sudo warp-cli --accept-tos connect
         if: matrix.ipv == 'ipv6'
 
-      - run: sudo warp-cli --accept-tos mode warp+doh
+      - run: sudo warp-cli --accept-tos mode warp
+        if: matrix.ipv == 'ipv6'
+
+      - run: sudo warp-cli --accept-tos debug network
         if: matrix.ipv == 'ipv6'
 
       - name: Check if WARP is working
