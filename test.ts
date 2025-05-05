@@ -1,7 +1,7 @@
 import mqtt from "mqtt";
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { randomWords } from "@nordicsemiconductor/random-words";
+import { randomWords } from "@bifravst/random-words";
 import { ipv4, ipv6 } from "./ip.ts";
 import fs from "node:fs/promises";
 

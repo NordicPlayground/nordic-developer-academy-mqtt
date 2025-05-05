@@ -5,10 +5,12 @@
     "test:e2e": "node --experimental-transform-types --test test.ts"
   },
   "dependencies": {
-    "@nordicsemiconductor/random-words": "8.0.1",
-    "mqtt": "5.10.3"
+    "mqtt": "5.12.0"
   },
   "engines": {
     "node": ">=22.7.0"
+  },
+  "devDependencies": {
+    "@bifravst/random-words": "8.0.3"
   }
 }
